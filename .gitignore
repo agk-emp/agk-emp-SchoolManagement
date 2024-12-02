@@ -1,0 +1,5 @@
+# Ignore Visual Studio and metadata files
+.vs/
+
+# Ignore build artifacts
+obj/

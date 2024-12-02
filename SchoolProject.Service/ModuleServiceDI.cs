@@ -1,0 +1,59 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using SchoolProject.Service.Abstracts;
+using SchoolProject.Service.Implementations;
+using SchoolProject.Service.Options;
+using System.Text;
+
+namespace SchoolProject.Service
+{
+    public static class ModuleServiceDI
+    {
+        public static IServiceCollection AddServiceDIS(this IServiceCollection services)
+        {
+            services.AddTransient<IStudentService, StudentService>();
+            services.AddTransient<IDepartmentService, DepartmentService>();
+            services.AddTransient<IAuthorizationService, AuthorizationService>();
+            services.AddTransient<IClaimService, ClaimService>();
+            services.ConfigureOptions<JwtOptionsSetup>();
+            services.ConfigureOptions<RefreshTokenOptionsSetup>();
+            CheckJwt(services);
+            services.AddTransient<IAuthService, AuthService>();
+
+            return services;
+        }
+
+        private static void CheckJwt(IServiceCollection services)
+        {
+            var provider = services.BuildServiceProvider();
+            var jwtSettings = provider.GetRequiredService<IOptions<JwtOptions>>().Value;
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.Zero,
+            };
+
+            services.AddSingleton(tokenValidationParameters);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+         .AddJwtBearer(x =>
+         {
+             x.RequireHttpsMetadata = false;
+             x.SaveToken = true;
+             x.TokenValidationParameters = tokenValidationParameters;
+         });
+        }
+    }
+}
