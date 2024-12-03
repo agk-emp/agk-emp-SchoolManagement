@@ -12,7 +12,7 @@ namespace SchoolProject.Infrastructure.InfrastructureBases
         public GenericRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-            _dbSet=_dbContext.Set<T>();
+            _dbSet = _dbContext.Set<T>();
         }
 
         public virtual async Task<T> AddAsync(T entity)
