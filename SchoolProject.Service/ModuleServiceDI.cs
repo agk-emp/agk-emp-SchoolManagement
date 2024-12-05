@@ -20,6 +20,7 @@ namespace SchoolProject.Service
             services.ConfigureOptions<JwtOptionsSetup>();
             services.ConfigureOptions<RefreshTokenOptionsSetup>();
             CheckJwt(services);
+            AddAuthorizationSettings(services);
             services.AddTransient<IAuthService, AuthService>();
 
             return services;
@@ -54,6 +55,17 @@ namespace SchoolProject.Service
              x.SaveToken = true;
              x.TokenValidationParameters = tokenValidationParameters;
          });
+        }
+
+        private static void AddAuthorizationSettings(IServiceCollection services)
+        {
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("DeleteStudent", pol =>
+                {
+                    pol.RequireClaim("delete", "delete");
+                });
+            });
         }
     }
 }

@@ -175,6 +175,7 @@ namespace SchoolProject.Service.Implementations
         private async Task<List<Claim>> GetUserClaims(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(user);
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
@@ -184,6 +185,7 @@ namespace SchoolProject.Service.Implementations
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
             };
             AddUserRolesToClaims(userRoles, claims);
+            claims.AddRange(userClaims);
             return claims;
         }
 

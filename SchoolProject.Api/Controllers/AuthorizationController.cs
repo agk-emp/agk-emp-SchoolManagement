@@ -78,5 +78,13 @@ namespace SchoolProject.Api.Controllers
             var result = await _mediator.Send(new ManageUserClaimsQuery(id));
             return NewResult(result);
         }
+
+        [HttpPut(Routing.AuthorizationRouting.UpdateUserClaims)]
+        [SwaggerOperation(summary: "Update user claims")]
+        public async Task<IActionResult> UpdateUserClaims(UpdateUserClaimsCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return NewResult(result);
+        }
     }
 }

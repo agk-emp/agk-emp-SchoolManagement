@@ -63,6 +63,7 @@
             public const string GetUserWithRolesChecker = AuthorizationRoleVersionOneRoute + "GetUserWithRolesChecker" + "/" + singleRoute;
             public const string UpdateUserRoles = AuthorizationRoleVersionOneRoute + "UpdateUserRoles" + "/" + singleRoute;
             public const string ManageUserClaims = AuthorizationClaimVersionOneRoute + "GetClaimsChecked/" + singleRoute;
+            public const string UpdateUserClaims = AuthorizationClaimVersionOneRoute + "UpdateUserClaims/" + singleRoute;
         }
     }
 }

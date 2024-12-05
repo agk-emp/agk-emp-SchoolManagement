@@ -43,6 +43,7 @@ namespace SchoolProject.Api.Controllers
             return NewResult(response);
         }
 
+        [Authorize(policy: "DeleteStudent")]
         [HttpDelete(Routing.StudentRouting.Delete)]
         public async Task<IActionResult> DeleteStudent(int id)
         {
