@@ -114,7 +114,7 @@ namespace SchoolProject.Service.Implementations
                 var roleUserChecker = new UserWithRolesAvailability.RolesForUserChecker();
                 roleUserChecker.Name = role.Name;
                 roleUserChecker.Id = role.Id;
-                roleUserChecker.HasRole = userRoles.Contains(role.Name) ? true : false;
+                roleUserChecker.HasRole = await _userManager.IsInRoleAsync(user, role.Name) ? true : false;
 
                 rolesUserChecker.Add(roleUserChecker);
             }
