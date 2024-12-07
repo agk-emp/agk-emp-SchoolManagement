@@ -55,7 +55,6 @@ builder.Services.AddSwaggerGen(c =>
            });
 });
 
-
 var provider = builder.Services.BuildServiceProvider();
 await RoleSeeder.Seed(provider.GetRequiredService<RoleManager<Role>>());
 await UserSeeder.Seed(provider.GetRequiredService<UserManager<User>>());

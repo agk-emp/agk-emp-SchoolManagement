@@ -13,17 +13,32 @@ namespace SchoolProject.Service
     {
         public static IServiceCollection AddServiceDIS(this IServiceCollection services)
         {
+
+
+            ConfigureOptions(services);
+
+            CheckJwt(services);
+            AddAuthorizationSettings(services);
+            RegisterServices(services);
+
+            return services;
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
             services.AddTransient<IClaimService, ClaimService>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IEmailService, EmailService>();
+        }
+
+        private static void ConfigureOptions(IServiceCollection services)
+        {
             services.ConfigureOptions<JwtOptionsSetup>();
             services.ConfigureOptions<RefreshTokenOptionsSetup>();
-            CheckJwt(services);
-            AddAuthorizationSettings(services);
-            services.AddTransient<IAuthService, AuthService>();
-
-            return services;
+            services.ConfigureOptions<EmailOptionsSetup>();
         }
 
         private static void CheckJwt(IServiceCollection services)

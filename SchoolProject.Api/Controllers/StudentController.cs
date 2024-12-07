@@ -8,7 +8,7 @@ using SchoolProject.Data.AppMeatData;
 
 namespace SchoolProject.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class StudentController : AppControllerBase
     {
         public StudentController(IMediator mediator) : base(mediator)

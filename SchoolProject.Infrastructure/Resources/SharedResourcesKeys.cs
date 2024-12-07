@@ -38,7 +38,8 @@
         public const string ThereIsNoSuchRole = nameof(ThereIsNoSuchRole);
         public const string UsersExistWithThisRole = nameof(UsersExistWithThisRole);
         public const string Id = nameof(Id);
-
+        public const string InvalidEmailAddress = nameof(InvalidEmailAddress);
+        public const string Message = nameof(Message);
         #region validation properties not in file
         public const string PropertyValue = "{PropertyValue}";
         public const int NameMaxLength = 20;
