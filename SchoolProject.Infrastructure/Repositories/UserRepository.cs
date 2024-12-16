@@ -66,6 +66,8 @@ namespace SchoolProject.Infrastructure.Repositories
             }
         }
 
+
+
         private async Task<bool> AddClaimsToUser(User user, List<Claim> claims)
         {
             var addingClaimsResult = await _userManager.AddClaimsAsync(user, claims);

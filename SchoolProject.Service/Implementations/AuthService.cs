@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Infrastructure.Abstracts;
+using SchoolProject.Infrastructure.InfrastructureBases;
 using SchoolProject.Infrastructure.Resources;
 using SchoolProject.Service.Abstracts;
 using SchoolProject.Service.Options;
+using SchoolProject.Service.Requests;
 using SchoolProject.Service.Results;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,13 +28,21 @@ namespace SchoolProject.Service.Implementations
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly UserManager<User> _userManager;
         IStringLocalizer<SharedResources> _localizer;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUrlHelper _urlHelper;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IEmailService _emailService;
 
         public AuthService(IOptions<JwtOptions> options,
             IOptions<RefreshTokenOptions> refreshTokenOptions,
             IUserRefrshTokenRepository userRefrshTokenRepository,
             TokenValidationParameters tokenValidationParameters,
             UserManager<User> userManager,
-            IStringLocalizer<SharedResources> localizer)
+            IStringLocalizer<SharedResources> localizer,
+            IUnitOfWork unitOfWork,
+            IUrlHelper urlHelper,
+            IHttpContextAccessor contextAccessor,
+            IEmailService emailService)
         {
             _jwtoOptions = options.Value;
             _refreshTokenOptions = refreshTokenOptions.Value;
@@ -38,6 +50,10 @@ namespace SchoolProject.Service.Implementations
             _tokenValidationParameters = tokenValidationParameters;
             _userManager = userManager;
             _localizer = localizer;
+            _unitOfWork = unitOfWork;
+            _urlHelper = urlHelper;
+            _contextAccessor = contextAccessor;
+            _emailService = emailService;
         }
 
         public async Task<JwtResult> GetJwtToken(User user)
@@ -152,6 +168,66 @@ namespace SchoolProject.Service.Implementations
         {
             JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
             return jwtToken;
+        }
+
+        public async Task<bool> RegisterUser([FromQuery] RegisterUserRequest request)
+        {
+            using var transaction = _unitOfWork.BeginTransaction();
+            if (await _userManager.FindByEmailAsync(request.Email) is not null ||
+                await _userManager.FindByNameAsync(request.UserName) is not null)
+            {
+                throw new Exception(_localizer[SharedResourcesKeys.AlreadyExists,
+                    _localizer[SharedResourcesKeys.User]]);
+            }
+
+            var user = new User()
+            {
+                Email = request.Email,
+                UserName = request.UserName,
+                FullName = request.FullName,
+                Address = request.Address,
+                Country = request.Address,
+                PhoneNumber = request.PhoneNumber,
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "user");
+                var confirmationCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var requestRoute = _contextAccessor.HttpContext.Request;
+                var returnUrl = requestRoute.Scheme + "://" + requestRoute.Host + _urlHelper.Action("ConfirmEmail", "User", new { userId = user.Id, code = code });
+                var message = $"To Confirm Email Click Link: <a href='{returnUrl}'>Link Of Confirmation</a>";
+                await _emailService.SendEmail(user.Email, message);
+                _unitOfWork.Commit();
+                return true;
+            }
+
+            _unitOfWork.RollBack();
+            throw new Exception(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<bool> ConfirmEmail(int userId, string? code)
+        {
+            var user = await GetUserById(userId);
+            var confirmationResult = await _userManager.ConfirmEmailAsync(user, code);
+            if (confirmationResult.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private async Task<User> GetUserById(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null)
+            {
+                throw new Exception(SharedResourcesKeys.NotFound);
+            }
+            return user;
         }
 
         private RefreshToken GetRefreahToken(string userName)

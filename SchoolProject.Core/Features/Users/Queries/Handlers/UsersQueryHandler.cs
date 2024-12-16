@@ -8,22 +8,27 @@ using SchoolProject.Core.Features.Users.Queries.Results;
 using SchoolProject.Core.Wrappers;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Infrastructure.Resources;
+using SchoolProject.Service.Abstracts;
 
 namespace SchoolProject.Core.Features.Users.Queries.Handlers
 {
     public class UsersQueryHandler : ResponseHandler, IRequestHandler<GetUserByIdQuery,
         Response<GetUserByIdResponse>>,
         IRequestHandler<GetUsersPaginatedQuery,
-            PaginatedResponse<GetUsersPaginatedResponse>>
+            PaginatedResponse<GetUsersPaginatedResponse>>,
+        IRequestHandler<ConfirmEmailQuery, Response<string>>
     {
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
         public UsersQueryHandler(IStringLocalizer<SharedResources> localizer,
             UserManager<User> userManager,
-            IMapper mapper) : base(localizer)
+            IMapper mapper,
+            IAuthService authService) : base(localizer)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _authService = authService;
         }
 
         public async Task<Response<GetUserByIdResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
@@ -46,6 +51,15 @@ namespace SchoolProject.Core.Features.Users.Queries.Handlers
             var result = await mappedUsers.ToPaginatedResult(request.PageNumber, request.PageSize);
 
             return result;
+        }
+
+        public async Task<Response<string>> Handle(ConfirmEmailQuery request, CancellationToken cancellationToken)
+        {
+            if (await _authService.ConfirmEmail(request.UserId, request.Code))
+            {
+                return Success<string>(_localizer[SharedResourcesKeys.Success]);
+            }
+            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
         }
     }
 }

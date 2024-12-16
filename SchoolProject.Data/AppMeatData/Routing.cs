@@ -38,6 +38,7 @@
             public const string Update = AccountVersionOneRoute + "Update/" + singleRoute;
             public const string Delete = AccountVersionOneRoute + "Delete/" + singleRoute;
             public const string ChangePassword = AccountVersionOneRoute + "ChangePassword/" + singleRoute;
+            public const string ConfirmEmail = "/Api/User/ConfirmEmail";
         }
 
         public static class LoginRouting
