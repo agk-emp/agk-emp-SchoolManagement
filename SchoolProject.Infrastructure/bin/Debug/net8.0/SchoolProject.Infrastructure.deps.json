@@ -64,6 +64,17 @@
           }
         }
       },
+      "EntityFrameworkCore.EncryptColumn/6.0.8": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "8.0.8"
+        },
+        "runtime": {
+          "lib/netcoreapp6.0/EntityFrameworkCore.EncryptColumn.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "MailKit/3.2.0": {
         "dependencies": {
           "MimeKit": "3.2.0"
@@ -709,6 +720,7 @@
       },
       "SchoolProject.Data/1.0.0": {
         "dependencies": {
+          "EntityFrameworkCore.EncryptColumn": "6.0.8",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.8"
         },
         "runtime": {
@@ -739,6 +751,13 @@
       "sha512": "sha512-l1Xm2MWOF2Mzcwuarlw8kWQXLZk3UeB55aQXVyjj23aBfDwOZ3gu5GP2kJ6KlmZeZv2TCzw7x4L3V36iNr3gww==",
       "path": "azure.identity/1.10.3",
       "hashPath": "azure.identity.1.10.3.nupkg.sha512"
+    },
+    "EntityFrameworkCore.EncryptColumn/6.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AgnhI+4ZM0lySJKR4cEWvDe/EtGL9nIF3jAMz9XikAyMdbEknDTlj0ksSdLwq7OVXMh/ZsR0IuRHNkcnfXkGzQ==",
+      "path": "entityframeworkcore.encryptcolumn/6.0.8",
+      "hashPath": "entityframeworkcore.encryptcolumn.6.0.8.nupkg.sha512"
     },
     "MailKit/3.2.0": {
       "type": "package",

@@ -62,5 +62,12 @@ namespace SchoolProject.Api.Controllers
             var result = await _mediator.Send(query);
             return NewResult(result);
         }
+
+        [HttpPost(Routing.UserRouting.ResetPassword)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return NewResult(result);
+        }
     }
 }

@@ -33,6 +33,7 @@
             private const string Prefix = "Account";
             private const string AccountVersionOneRoute = rootVersionOne + "/" + Prefix + "/";
             public const string Register = AccountVersionOneRoute + "Register";
+            public const string ResetPassword = AccountVersionOneRoute + "ResetPassword";
             public const string GetById = AccountVersionOneRoute + $"User/{singleRoute}";
             public const string GetAll = AccountVersionOneRoute + "Users";
             public const string Update = AccountVersionOneRoute + "Update/" + singleRoute;

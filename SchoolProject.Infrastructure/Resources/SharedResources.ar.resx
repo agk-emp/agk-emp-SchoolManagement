@@ -180,6 +180,9 @@
   <data name="RefreshToken" xml:space="preserve">
     <value>كود التحديث</value>
   </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>إعادة تعيين كلمة المرور</value>
+  </data>
   <data name="RoleName" xml:space="preserve">
     <value>اسم الدور</value>
   </data>

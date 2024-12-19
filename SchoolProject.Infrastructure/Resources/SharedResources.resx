@@ -180,6 +180,9 @@
   <data name="RefreshToken" xml:space="preserve">
     <value />
   </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value />
+  </data>
   <data name="RoleName" xml:space="preserve">
     <value />
   </data>

@@ -40,6 +40,7 @@
         public const string Id = nameof(Id);
         public const string InvalidEmailAddress = nameof(InvalidEmailAddress);
         public const string Message = nameof(Message);
+        public const string ResetPassword = nameof(ResetPassword);
         #region validation properties not in file
         public const string PropertyValue = "{PropertyValue}";
         public const int NameMaxLength = 20;

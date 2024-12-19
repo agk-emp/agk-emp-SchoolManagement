@@ -220,9 +220,60 @@ namespace SchoolProject.Service.Implementations
             return false;
         }
 
+        public async Task<bool> ResetPassword(string email)
+        {
+            using var transaction = _unitOfWork.BeginTransaction();
+
+            try
+            {
+
+                var user = await GetUserByEmail(email);
+                var code = GenerateRandomCode();
+                user.Code = code;
+                var updatingResult = await _userManager.UpdateAsync(user);
+                if (updatingResult.Succeeded)
+                {
+                    var sendResetMail = await _emailService.
+                        SendEmail(email, code,
+                        _localizer[SharedResourcesKeys.ResetPassword]);
+
+                    if (sendResetMail)
+                    {
+                        transaction.Commit();
+                        return true;
+                    }
+                }
+                transaction.Rollback();
+                return false;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private string GenerateRandomCode()
+        {
+            var chars = "0123456789";
+            var random = new Random();
+            var randomNumberCode = new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
+            return randomNumberCode;
+        }
+
         private async Task<User> GetUserById(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null)
+            {
+                throw new Exception(SharedResourcesKeys.NotFound);
+            }
+            return user;
+        }
+
+        private async Task<User> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
             if (user is null)
             {
                 throw new Exception(SharedResourcesKeys.NotFound);

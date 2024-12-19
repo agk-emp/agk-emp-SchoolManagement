@@ -13,6 +13,7 @@ namespace SchoolProject.Service.Abstracts
         Task<JwtResult> RefreshToken(string accessToken,
             string refreshToken);
         Task<bool> RegisterUser(RegisterUserRequest request);
+        Task<bool> ResetPassword(string email);
         bool ValidateSignInToken(string accessToken);
     }
 }
