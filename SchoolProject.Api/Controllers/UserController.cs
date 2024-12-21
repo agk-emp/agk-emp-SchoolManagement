@@ -69,5 +69,19 @@ namespace SchoolProject.Api.Controllers
             var result = await _mediator.Send(command);
             return NewResult(result);
         }
+
+        [HttpPost(Routing.UserRouting.ConfirmResetPassword)]
+        public async Task<IActionResult> ConfirmPasswordResetting([FromForm] ConfirmPasswordResetCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return NewResult(result);
+        }
+
+        [HttpPost(Routing.UserRouting.ReplacePassword)]
+        public async Task<IActionResult> ReplacePassword(ReplacePasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return NewResult(result);
+        }
     }
 }

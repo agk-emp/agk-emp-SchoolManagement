@@ -253,6 +253,34 @@ namespace SchoolProject.Service.Implementations
             }
         }
 
+        public async Task<bool> ConfirmPasswordResetting(string email, string code)
+        {
+            var user = await GetUserByEmail(email);
+            if (user.Code == code)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> ReplacePassword(string email, string password)
+        {
+            using var transaction = _unitOfWork.BeginTransaction();
+            try
+            {
+                var user = await GetUserByEmail(email);
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, password);
+                transaction.Commit();
+                return true;
+            }
+            catch
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+
         private string GenerateRandomCode()
         {
             var chars = "0123456789";

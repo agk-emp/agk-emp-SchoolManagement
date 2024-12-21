@@ -15,7 +15,9 @@ namespace SchoolProject.Core.Features.Users.Commands.Handlers
         IRequestHandler<EditUserCommand, Response<string>>,
         IRequestHandler<DeleteUserCommand, Response<string>>,
         IRequestHandler<ChangeUserPasswordCommand, Response<string>>,
-        IRequestHandler<ResetPasswordCommand, Response<string>>
+        IRequestHandler<ResetPasswordCommand, Response<string>>,
+        IRequestHandler<ConfirmPasswordResetCommand, Response<string>>,
+        IRequestHandler<ReplacePasswordCommand, Response<string>>
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
@@ -106,6 +108,28 @@ namespace SchoolProject.Core.Features.Users.Commands.Handlers
             if (result)
             {
                 return Success(SharedResourcesKeys.Updated);
+            }
+            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<Response<string>> Handle(ConfirmPasswordResetCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.ConfirmPasswordResetting(request.Email,
+                request.Code);
+
+            if (result)
+            {
+                return Success(SharedResourcesKeys.Success);
+            }
+            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<Response<string>> Handle(ReplacePasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.ReplacePassword(request.Email, request.NewPassword);
+            if (result)
+            {
+                return Success(SharedResourcesKeys.Success);
             }
             return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
         }

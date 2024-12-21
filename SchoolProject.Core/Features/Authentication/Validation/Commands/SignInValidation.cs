@@ -21,7 +21,7 @@ namespace SchoolProject.Core.Features.Authentication.Validation.Commands
             _signInManager = signInManager;
             _userManager = userManager;
 
-            //AddCommonValidators();
+            AddCommonValidators();
             AddCustomValidators();
         }
 
