@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using SchoolProject.Api.Bases;
 using SchoolProject.Core.Features.Students.Commands.Models;
 using SchoolProject.Core.Features.Students.Queries.Models;
+using SchoolProject.Core.Filters;
 using SchoolProject.Data.AppMeatData;
 
 namespace SchoolProject.Api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class StudentController : AppControllerBase
     {
         public StudentController(IMediator mediator) : base(mediator)
@@ -16,6 +17,7 @@ namespace SchoolProject.Api.Controllers
         }
 
         [HttpGet(Routing.StudentRouting.GetAll)]
+        [ServiceFilter(typeof(AuthFilter))]
         public async Task<IActionResult> GetAllStudents()
         {
             var response = await _mediator.Send(new GetAllStudentsQuery());
