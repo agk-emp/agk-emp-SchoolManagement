@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data.Entities;
 using SchoolProject.Data.Entities.Identity;
+using SchoolProject.Data.Entities.Views;
 
 namespace SchoolProject.Infrastructure.Context
 {
@@ -18,6 +19,9 @@ namespace SchoolProject.Infrastructure.Context
         public DbSet<Student> Students { get; set; }
         public DbSet<StudentSubject> StudentSubjects { get; set; }
         public DbSet<Subjects> Subjectss { get; set; }
+
+        //Views
+        public DbSet<StudentsCountPerDepartmentView> StudentsCountPerDepartmentView { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

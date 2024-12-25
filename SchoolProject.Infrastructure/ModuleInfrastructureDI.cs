@@ -6,9 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Infrastructure.Abstracts;
+using SchoolProject.Infrastructure.Abstracts.Views;
 using SchoolProject.Infrastructure.Context;
 using SchoolProject.Infrastructure.InfrastructureBases;
 using SchoolProject.Infrastructure.Repositories;
+using SchoolProject.Infrastructure.Repositories.Views;
 using System.Globalization;
 
 namespace SchoolProject.Infrastructure
@@ -60,6 +62,10 @@ namespace SchoolProject.Infrastructure
             services.AddTransient<IUserRefrshTokenRepository, UserRefrshTokenRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IClaimRepository, ClaimRepository>();
+
+            //Views
+            services.AddTransient<IStudentsCountPerDepartmentViewRepository,
+                StudentsCountPerDepartmentViewRepository>();
 
             services.AddLocalization(opt => { opt.ResourcesPath = ""; });
             services.Configure<RequestLocalizationOptions>(opt =>

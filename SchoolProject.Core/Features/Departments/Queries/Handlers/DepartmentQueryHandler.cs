@@ -13,7 +13,9 @@ using System.Linq.Expressions;
 namespace SchoolProject.Core.Features.Departments.Queries.Handlers
 {
     public class DepartmentQueryHandler : ResponseHandler,
-        IRequestHandler<GetDepartmentByIdQuery, Response<GetDepartmentByIdResponse>>
+        IRequestHandler<GetDepartmentByIdQuery, Response<GetDepartmentByIdResponse>>,
+        IRequestHandler<GetStudentsCountPerDepartmentQuery,
+            Response<IEnumerable<GetStudentsCountPerDepartmentResponse>>>
     {
         private readonly IDepartmentService _departmentService;
         private readonly IStudentService _studentService;
@@ -48,6 +50,13 @@ namespace SchoolProject.Core.Features.Departments.Queries.Handlers
             request.StudentPageSize);
 
             mappedResult.Students = departmentStudentsPaginated;
+            return Success(mappedResult);
+        }
+
+        public async Task<Response<IEnumerable<GetStudentsCountPerDepartmentResponse>>> Handle(GetStudentsCountPerDepartmentQuery request, CancellationToken cancellationToken)
+        {
+            var result = await _departmentService.GetStudentsForEachDepartments();
+            var mappedResult = _mapper.Map<IEnumerable<GetStudentsCountPerDepartmentResponse>>(result);
             return Success(mappedResult);
         }
     }
