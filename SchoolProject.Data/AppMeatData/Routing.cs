@@ -26,6 +26,8 @@
             private const string prefix = "Department";
             private const string departmentVersionOneRoute = rootVersionOne + "/" + prefix + "/";
             public const string GetById = departmentVersionOneRoute + "Id";
+
+            public const string GetStudentsPerDepartment = departmentVersionOneRoute + "GetStudentsPerDepartment";
         }
 
         public static class UserRouting
