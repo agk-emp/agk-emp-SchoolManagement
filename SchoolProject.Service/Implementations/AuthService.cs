@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Infrastructure.Abstracts;
+using SchoolProject.Infrastructure.InfrastructureBases;
 using SchoolProject.Infrastructure.Resources;
 using SchoolProject.Service.Abstracts;
 using SchoolProject.Service.Options;
+using SchoolProject.Service.Requests;
 using SchoolProject.Service.Results;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,13 +28,21 @@ namespace SchoolProject.Service.Implementations
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly UserManager<User> _userManager;
         IStringLocalizer<SharedResources> _localizer;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUrlHelper _urlHelper;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IEmailService _emailService;
 
         public AuthService(IOptions<JwtOptions> options,
             IOptions<RefreshTokenOptions> refreshTokenOptions,
             IUserRefrshTokenRepository userRefrshTokenRepository,
             TokenValidationParameters tokenValidationParameters,
             UserManager<User> userManager,
-            IStringLocalizer<SharedResources> localizer)
+            IStringLocalizer<SharedResources> localizer,
+            IUnitOfWork unitOfWork,
+            IUrlHelper urlHelper,
+            IHttpContextAccessor contextAccessor,
+            IEmailService emailService)
         {
             _jwtoOptions = options.Value;
             _refreshTokenOptions = refreshTokenOptions.Value;
@@ -38,6 +50,10 @@ namespace SchoolProject.Service.Implementations
             _tokenValidationParameters = tokenValidationParameters;
             _userManager = userManager;
             _localizer = localizer;
+            _unitOfWork = unitOfWork;
+            _urlHelper = urlHelper;
+            _contextAccessor = contextAccessor;
+            _emailService = emailService;
         }
 
         public async Task<JwtResult> GetJwtToken(User user)
@@ -154,6 +170,145 @@ namespace SchoolProject.Service.Implementations
             return jwtToken;
         }
 
+        public async Task<bool> RegisterUser([FromQuery] RegisterUserRequest request)
+        {
+            using var transaction = _unitOfWork.BeginTransaction();
+            if (await _userManager.FindByEmailAsync(request.Email) is not null ||
+                await _userManager.FindByNameAsync(request.UserName) is not null)
+            {
+                throw new Exception(_localizer[SharedResourcesKeys.AlreadyExists,
+                    _localizer[SharedResourcesKeys.User]]);
+            }
+
+            var user = new User()
+            {
+                Email = request.Email,
+                UserName = request.UserName,
+                FullName = request.FullName,
+                Address = request.Address,
+                Country = request.Address,
+                PhoneNumber = request.PhoneNumber,
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "user");
+                var confirmationCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var requestRoute = _contextAccessor.HttpContext.Request;
+                var returnUrl = requestRoute.Scheme + "://" + requestRoute.Host + _urlHelper.Action("ConfirmEmail", "User", new { userId = user.Id, code = code });
+                var message = $"To Confirm Email Click Link: <a href='{returnUrl}'>Link Of Confirmation</a>";
+                await _emailService.SendEmail(user.Email, message);
+                _unitOfWork.Commit();
+                return true;
+            }
+
+            _unitOfWork.RollBack();
+            throw new Exception(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<bool> ConfirmEmail(int userId, string? code)
+        {
+            var user = await GetUserById(userId);
+            var confirmationResult = await _userManager.ConfirmEmailAsync(user, code);
+            if (confirmationResult.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> ResetPassword(string email)
+        {
+            using var transaction = _unitOfWork.BeginTransaction();
+
+            try
+            {
+
+                var user = await GetUserByEmail(email);
+                var code = GenerateRandomCode();
+                user.Code = code;
+                var updatingResult = await _userManager.UpdateAsync(user);
+                if (updatingResult.Succeeded)
+                {
+                    var sendResetMail = await _emailService.
+                        SendEmail(email, code,
+                        _localizer[SharedResourcesKeys.ResetPassword]);
+
+                    if (sendResetMail)
+                    {
+                        transaction.Commit();
+                        return true;
+                    }
+                }
+                transaction.Rollback();
+                return false;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> ConfirmPasswordResetting(string email, string code)
+        {
+            var user = await GetUserByEmail(email);
+            if (user.Code == code)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> ReplacePassword(string email, string password)
+        {
+            using var transaction = _unitOfWork.BeginTransaction();
+            try
+            {
+                var user = await GetUserByEmail(email);
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, password);
+                transaction.Commit();
+                return true;
+            }
+            catch
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+
+        private string GenerateRandomCode()
+        {
+            var chars = "0123456789";
+            var random = new Random();
+            var randomNumberCode = new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
+            return randomNumberCode;
+        }
+
+        private async Task<User> GetUserById(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null)
+            {
+                throw new Exception(SharedResourcesKeys.NotFound);
+            }
+            return user;
+        }
+
+        private async Task<User> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                throw new Exception(SharedResourcesKeys.NotFound);
+            }
+            return user;
+        }
+
         private RefreshToken GetRefreahToken(string userName)
         {
             return new RefreshToken()
@@ -179,7 +334,7 @@ namespace SchoolProject.Service.Implementations
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub,user.UserName),
+                new Claim(JwtRegisteredClaimNames.UniqueName,user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
                 new Claim(JwtRegisteredClaimNames.PhoneNumber,user.PhoneNumber),
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),

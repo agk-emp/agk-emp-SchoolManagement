@@ -129,6 +129,12 @@
   <data name="AlreadyExists" xml:space="preserve">
     <value>العنصر مع هذه القيمة موجود: {0}</value>
   </data>
+  <data name="Code" xml:space="preserve">
+    <value>الرمز</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>تأكيد كلمة المرور الجديدة</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>تاكيد كلمة المرور</value>
   </data>
@@ -144,8 +150,14 @@
   <data name="Id" xml:space="preserve">
     <value>كود التعريف</value>
   </data>
+  <data name="InvalidEmailAddress" xml:space="preserve">
+    <value>عنوان البريد الإلكتروني غير صالح</value>
+  </data>
   <data name="MaxLength" xml:space="preserve">
     <value>تجاوز الحد الاقصى: {0}</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>رسالة</value>
   </data>
   <data name="MustEqual" xml:space="preserve">
     <value>{0} و {1} يجب ان يكونا متطابقين</value>
@@ -158,6 +170,9 @@
   </data>
   <data name="NameEn" xml:space="preserve">
     <value>الاسم بالانكليزي</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>كلمة مرور جديدة</value>
   </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>{0}: لا يمكن ان يبقى فارغا</value>
@@ -173,6 +188,9 @@
   </data>
   <data name="RefreshToken" xml:space="preserve">
     <value>كود التحديث</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>إعادة تعيين كلمة المرور</value>
   </data>
   <data name="RoleName" xml:space="preserve">
     <value>اسم الدور</value>

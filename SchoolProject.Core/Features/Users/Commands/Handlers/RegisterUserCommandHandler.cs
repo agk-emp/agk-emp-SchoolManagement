@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using SchoolProject.Core.Bases;
 using SchoolProject.Core.Features.Users.Commands.Models;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Infrastructure.Resources;
+using SchoolProject.Service.Abstracts;
 
 namespace SchoolProject.Core.Features.Users.Commands.Handlers
 {
@@ -14,43 +14,41 @@ namespace SchoolProject.Core.Features.Users.Commands.Handlers
         IRequestHandler<RegisterUserCommand, Response<string>>,
         IRequestHandler<EditUserCommand, Response<string>>,
         IRequestHandler<DeleteUserCommand, Response<string>>,
-        IRequestHandler<ChangeUserPasswordCommand, Response<string>>
+        IRequestHandler<ChangeUserPasswordCommand, Response<string>>,
+        IRequestHandler<ResetPasswordCommand, Response<string>>,
+        IRequestHandler<ConfirmPasswordResetCommand, Response<string>>,
+        IRequestHandler<ReplacePasswordCommand, Response<string>>
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IAuthService _authService;
 
         public RegisterUserCommandHandler(IStringLocalizer<SharedResources> localizer,
             IMapper mapper,
             UserManager<User> userManager,
-            IAuthorizationService authorizationService) : base(localizer)
+            IAuthorizationService authorizationService,
+            IAuthService authService) : base(localizer)
         {
             _mapper = mapper;
             _userManager = userManager;
             _authorizationService = authorizationService;
+            _authService = authService;
         }
 
         public async Task<Response<string>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            if (await _userManager.FindByEmailAsync(request.Email) is not null ||
-                await _userManager.FindByNameAsync(request.UserName) is not null)
+            try
             {
-                return Failure<string>(_localizer[SharedResourcesKeys.AlreadyExists,
-                    _localizer[SharedResourcesKeys.User]]);
-            }
 
-            var user = _mapper.Map<User>(request);
-
-            var result = await _userManager.CreateAsync(user, request.Password);
-
-
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, "user");
+                await _authService.RegisterUser(request);
                 return Created<string>();
             }
+            catch (Exception ex)
+            {
 
-            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
+                return Failure<string>(_localizer[ex.Message]);
+            }
         }
 
         public async Task<Response<string>> Handle(EditUserCommand request, CancellationToken cancellationToken)
@@ -101,6 +99,38 @@ namespace SchoolProject.Core.Features.Users.Commands.Handlers
                 return Success<string>(SharedResourcesKeys.Updated);
             }
 
+            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<Response<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.ResetPassword(request.Email);
+            if (result)
+            {
+                return Success(SharedResourcesKeys.Updated);
+            }
+            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<Response<string>> Handle(ConfirmPasswordResetCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.ConfirmPasswordResetting(request.Email,
+                request.Code);
+
+            if (result)
+            {
+                return Success(SharedResourcesKeys.Success);
+            }
+            return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
+        }
+
+        public async Task<Response<string>> Handle(ReplacePasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.ReplacePassword(request.Email, request.NewPassword);
+            if (result)
+            {
+                return Success(SharedResourcesKeys.Success);
+            }
             return Failure<string>(_localizer[SharedResourcesKeys.Unprocessable]);
         }
     }

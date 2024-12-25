@@ -8,6 +8,8 @@ namespace SchoolProject.Infrastructure.Context.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.Property(user => user.Code)
+                .HasMaxLength(1500);
             builder.HasMany(user => user.UserRefreshTokens)
                 .WithOne(refTok => refTok.User)
                 .HasForeignKey(refTok => refTok.UserId);

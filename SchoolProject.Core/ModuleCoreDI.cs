@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolProject.Core.Behaviours;
+using SchoolProject.Core.Filters;
 using System.Reflection;
 
 namespace SchoolProject.Core
@@ -17,6 +18,7 @@ namespace SchoolProject.Core
             services.AddTransient(typeof(IPipelineBehavior<,>),
                 typeof(ValidationBehaviour<,>));
 
+            services.AddTransient<AuthFilter>();
 
             return services;
         }

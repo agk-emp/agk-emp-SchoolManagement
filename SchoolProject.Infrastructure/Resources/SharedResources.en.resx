@@ -129,6 +129,12 @@
   <data name="AlreadyExists" xml:space="preserve">
     <value>An item with value {0} already exists</value>
   </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirm the new password</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Password confirmation</value>
   </data>
@@ -144,8 +150,14 @@
   <data name="Id" xml:space="preserve">
     <value>Id</value>
   </data>
+  <data name="InvalidEmailAddress" xml:space="preserve">
+    <value>Invalid email address</value>
+  </data>
   <data name="MaxLength" xml:space="preserve">
     <value>Exceeded the max length: {0}</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
   </data>
   <data name="MustEqual" xml:space="preserve">
     <value>Both {0} and {1} must be identical</value>
@@ -158,6 +170,9 @@
   </data>
   <data name="NameEn" xml:space="preserve">
     <value>The name in English</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>The new password</value>
   </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>{0}: can not be empty</value>
@@ -173,6 +188,9 @@
   </data>
   <data name="RefreshToken" xml:space="preserve">
     <value>Refresh token</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Reset password</value>
   </data>
   <data name="RoleName" xml:space="preserve">
     <value>Role's name</value>

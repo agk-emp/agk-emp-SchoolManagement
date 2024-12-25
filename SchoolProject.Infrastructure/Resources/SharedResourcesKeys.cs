@@ -38,6 +38,12 @@
         public const string ThereIsNoSuchRole = nameof(ThereIsNoSuchRole);
         public const string UsersExistWithThisRole = nameof(UsersExistWithThisRole);
         public const string Id = nameof(Id);
+        public const string InvalidEmailAddress = nameof(InvalidEmailAddress);
+        public const string Message = nameof(Message);
+        public const string ResetPassword = nameof(ResetPassword);
+        public const string Code = nameof(Code);
+        public const string NewPassword = nameof(NewPassword);
+        public const string ConfirmNewPassword = nameof(ConfirmNewPassword);
 
         #region validation properties not in file
         public const string PropertyValue = "{PropertyValue}";
