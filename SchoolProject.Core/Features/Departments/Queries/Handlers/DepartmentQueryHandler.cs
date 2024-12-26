@@ -15,7 +15,9 @@ namespace SchoolProject.Core.Features.Departments.Queries.Handlers
     public class DepartmentQueryHandler : ResponseHandler,
         IRequestHandler<GetDepartmentByIdQuery, Response<GetDepartmentByIdResponse>>,
         IRequestHandler<GetStudentsCountPerDepartmentQuery,
-            Response<IEnumerable<GetStudentsCountPerDepartmentResponse>>>
+            Response<IEnumerable<GetStudentsCountPerDepartmentResponse>>>,
+        IRequestHandler<GETStudentsCountForSpecificDepartmentQuery,
+            Response<GETStudentsCountForSpecificDepartmentResponse>>
     {
         private readonly IDepartmentService _departmentService;
         private readonly IStudentService _studentService;
@@ -57,6 +59,13 @@ namespace SchoolProject.Core.Features.Departments.Queries.Handlers
         {
             var result = await _departmentService.GetStudentsForEachDepartments();
             var mappedResult = _mapper.Map<IEnumerable<GetStudentsCountPerDepartmentResponse>>(result);
+            return Success(mappedResult);
+        }
+
+        public async Task<Response<GETStudentsCountForSpecificDepartmentResponse>> Handle(GETStudentsCountForSpecificDepartmentQuery request, CancellationToken cancellationToken)
+        {
+            var procResult = await _departmentService.GetStudentsCountForThisDepartment(request.Id);
+            var mappedResult = _mapper.Map<GETStudentsCountForSpecificDepartmentResponse>(procResult);
             return Success(mappedResult);
         }
     }
