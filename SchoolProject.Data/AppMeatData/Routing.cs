@@ -28,6 +28,7 @@
             public const string GetById = departmentVersionOneRoute + "Id";
 
             public const string GetStudentsPerDepartment = departmentVersionOneRoute + "GetStudentsPerDepartment";
+            public const string GETStudentsCountForSpecificDepartment = departmentVersionOneRoute + "GETStudentsCountForSpecificDepartment/" + singleRoute;
         }
 
         public static class UserRouting

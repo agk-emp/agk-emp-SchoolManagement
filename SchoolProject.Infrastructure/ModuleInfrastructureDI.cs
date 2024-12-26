@@ -6,10 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Infrastructure.Abstracts;
+using SchoolProject.Infrastructure.Abstracts.Procedures;
 using SchoolProject.Infrastructure.Abstracts.Views;
 using SchoolProject.Infrastructure.Context;
 using SchoolProject.Infrastructure.InfrastructureBases;
 using SchoolProject.Infrastructure.Repositories;
+using SchoolProject.Infrastructure.Repositories.Procedures;
 using SchoolProject.Infrastructure.Repositories.Views;
 using System.Globalization;
 
@@ -66,6 +68,10 @@ namespace SchoolProject.Infrastructure
             //Views
             services.AddTransient<IStudentsCountPerDepartmentViewRepository,
                 StudentsCountPerDepartmentViewRepository>();
+
+            //Stored procedures
+            services.AddTransient<IStoredProceduresRepository,
+                StoredProceduresRepository>();
 
             services.AddLocalization(opt => { opt.ResourcesPath = ""; });
             services.Configure<RequestLocalizationOptions>(opt =>

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data.Entities;
+using SchoolProject.Data.Entities.Procedures;
 using SchoolProject.Data.Entities.Views;
 using SchoolProject.Infrastructure.Abstracts;
+using SchoolProject.Infrastructure.Abstracts.Procedures;
 using SchoolProject.Infrastructure.Abstracts.Views;
 using SchoolProject.Service.Abstracts;
 
@@ -12,12 +14,15 @@ namespace SchoolProject.Service.Implementations
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IStudentsCountPerDepartmentViewRepository
             _studentsCountPerDepartmentViewRepository;
+        private readonly IStoredProceduresRepository _storedProceduresRepository;
 
         public DepartmentService(IDepartmentRepository departmentRepository,
-            IStudentsCountPerDepartmentViewRepository studentsCountPerDepartmentViewRepository)
+            IStudentsCountPerDepartmentViewRepository studentsCountPerDepartmentViewRepository,
+            IStoredProceduresRepository storedProceduresRepository)
         {
             _departmentRepository = departmentRepository;
             _studentsCountPerDepartmentViewRepository = studentsCountPerDepartmentViewRepository;
+            _storedProceduresRepository = storedProceduresRepository;
         }
 
         public async Task<Department> GetDepartmentById(int id)
@@ -45,6 +50,13 @@ namespace SchoolProject.Service.Implementations
             var result = await _studentsCountPerDepartmentViewRepository.GetTableNoTracking()
                 .ToListAsync();
             return result ?? Enumerable.Empty<StudentsCountPerDepartmentView>();
+        }
+
+        public async Task<GETStudentsCountForDepartmentProcedure>
+            GetStudentsCountForThisDepartment(int id)
+        {
+            var result = await _storedProceduresRepository.GetStudentsCountForThisDepartment(id);
+            return result;
         }
     }
 }
