@@ -5,6 +5,7 @@ using SchoolProject.Data.Entities;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Data.Entities.Procedures;
 using SchoolProject.Data.Entities.Views;
+using SchoolProject.Infrastructure.Context.DbFunctions;
 
 namespace SchoolProject.Infrastructure.Context
 {
@@ -20,6 +21,7 @@ namespace SchoolProject.Infrastructure.Context
         public DbSet<Student> Students { get; set; }
         public DbSet<StudentSubject> StudentSubjects { get; set; }
         public DbSet<Subjects> Subjectss { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
 
         //Views
         public DbSet<StudentsCountPerDepartmentView> StudentsCountPerDepartmentView { get; set; }
@@ -34,6 +36,10 @@ namespace SchoolProject.Infrastructure.Context
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+
+            modelBuilder.HasDbFunction(typeof(UserDefinedFunctions).GetMethod(nameof(UserDefinedFunctions.GetInstructorsTotalSalaries)))
+                    .HasName("GetInstructorsTotalSalaries")
+                    .HasSchema("dbo");
         }
     }
 }

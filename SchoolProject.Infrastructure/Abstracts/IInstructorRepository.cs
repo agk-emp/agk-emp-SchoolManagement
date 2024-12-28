@@ -5,5 +5,6 @@ namespace SchoolProject.Infrastructure.Abstracts
 {
     public interface IInstructorRepository : IGenericRepository<Instructor>
     {
+        decimal GetInstructorsTotalSalaries();
     }
 }
