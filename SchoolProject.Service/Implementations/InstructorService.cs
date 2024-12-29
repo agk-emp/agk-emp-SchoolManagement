@@ -1,4 +1,5 @@
-﻿using SchoolProject.Infrastructure.Abstracts;
+﻿using SchoolProject.Data.Entities.TabledFunctions;
+using SchoolProject.Infrastructure.Abstracts;
 using SchoolProject.Service.Abstracts;
 
 namespace SchoolProject.Service.Implementations
@@ -15,6 +16,12 @@ namespace SchoolProject.Service.Implementations
         public decimal GetInstructorsTotalSalaries()
         {
             var result = _instructorRepository.GetInstructorsTotalSalaries();
+            return result;
+        }
+
+        public IQueryable<GetInstructorsDetailsFunction> GetInstructorsDetails()
+        {
+            var result = _instructorRepository.GetInstructorsDetails();
             return result;
         }
     }

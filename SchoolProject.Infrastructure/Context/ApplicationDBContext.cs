@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data.Entities;
 using SchoolProject.Data.Entities.Identity;
 using SchoolProject.Data.Entities.Procedures;
+using SchoolProject.Data.Entities.TabledFunctions;
 using SchoolProject.Data.Entities.Views;
 using SchoolProject.Infrastructure.Context.DbFunctions;
 
@@ -28,6 +29,9 @@ namespace SchoolProject.Infrastructure.Context
 
         //Procedures
         public DbSet<GETStudentsCountForDepartmentProcedure> GETStudentsCountForDepartmentProcedure { get; set; }
+
+        //tabled functions
+        public DbSet<GetInstructorsDetailsFunction> GetInstructorsDetailsFunction { get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -40,6 +44,13 @@ namespace SchoolProject.Infrastructure.Context
             modelBuilder.HasDbFunction(typeof(UserDefinedFunctions).GetMethod(nameof(UserDefinedFunctions.GetInstructorsTotalSalaries)))
                     .HasName("GetInstructorsTotalSalaries")
                     .HasSchema("dbo");
+
+            modelBuilder.HasDbFunction(typeof(ApplicationDbContext).GetMethod(nameof(GetInstructorsDetails)))
+                .HasName("GetInstructorsDetails")
+                    .HasSchema("dbo");
         }
+
+        public IQueryable<GetInstructorsDetailsFunction> GetInstructorsDetails()
+        => FromExpression(() => GetInstructorsDetails());
     }
 }

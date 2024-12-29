@@ -21,5 +21,12 @@ namespace SchoolProject.Api.Controllers
             var result = await _mediator.Send(new GetInstructorsTotalSalariesQuery());
             return NewResult(result);
         }
+
+        [HttpGet(Routing.InstructorRouting.GetInstructorsDetails)]
+        public async Task<IActionResult> GetInstructorsDetails()
+        {
+            var result = await _mediator.Send(new GetInstructorsDetailsQuery());
+            return NewResult(result);
+        }
     }
 }
