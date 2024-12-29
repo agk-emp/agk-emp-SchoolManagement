@@ -79,5 +79,13 @@
             private const string LoginVersionOneRoute = rootVersionOne + "/" + Prefix + "/";
             public const string SendEmail = LoginVersionOneRoute + "SendEmail";
         }
+
+        public static class InstructorRouting
+        {
+            private const string Prefix = "Instructor";
+            private const string InstructorsVersionOneRoute = rootVersionOne + "/" + Prefix + "/";
+            public const string GetTotalSalaries = InstructorsVersionOneRoute + "GetTotalSalaries";
+            public const string GetInstructorsDetails = InstructorsVersionOneRoute + "GetInstructorsDetails";
+        }
     }
 }

@@ -405,7 +405,26 @@ namespace SchoolProject.Infrastructure.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Instructor");
+                    b.ToTable("Instructors");
+                });
+
+            modelBuilder.Entity("SchoolProject.Data.Entities.Procedures.GETStudentsCountForDepartmentProcedure", b =>
+                {
+                    b.Property<int>("DID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DNameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DNameEn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentsCount")
+                        .HasColumnType("int");
+
+                    b.ToTable("GETStudentsCountForDepartmentProcedure");
                 });
 
             modelBuilder.Entity("SchoolProject.Data.Entities.Student", b =>
@@ -490,6 +509,27 @@ namespace SchoolProject.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("positive_subject_period", "Period>0");
                         });
+                });
+
+            modelBuilder.Entity("SchoolProject.Data.Entities.Views.StudentsCountPerDepartmentView", b =>
+                {
+                    b.Property<int>("DID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DNameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DNameEn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentsCount")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("StudentsCountPerDepartment", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

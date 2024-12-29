@@ -44,6 +44,7 @@ namespace SchoolProject.Service
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddTransient<IInstructorService, InstructorService>();
         }
 
         private static void ConfigureOptions(IServiceCollection services)
