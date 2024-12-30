@@ -144,6 +144,9 @@
   <data name="Email" xml:space="preserve">
     <value>الايميل</value>
   </data>
+  <data name="FileUploadingFailed" xml:space="preserve">
+    <value>فشل تحميل الملف</value>
+  </data>
   <data name="FullName" xml:space="preserve">
     <value>اسم تسجيل الدخول للمستخدم</value>
   </data>
@@ -173,6 +176,9 @@
   </data>
   <data name="NewPassword" xml:space="preserve">
     <value>كلمة مرور جديدة</value>
+  </data>
+  <data name="NoFile" xml:space="preserve">
+    <value>لا يوجد ملف</value>
   </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>{0}: لا يمكن ان يبقى فارغا</value>

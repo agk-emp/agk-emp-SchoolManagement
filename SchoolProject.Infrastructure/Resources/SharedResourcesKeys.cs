@@ -44,6 +44,8 @@
         public const string Code = nameof(Code);
         public const string NewPassword = nameof(NewPassword);
         public const string ConfirmNewPassword = nameof(ConfirmNewPassword);
+        public const string FileUploadingFailed = nameof(FileUploadingFailed);
+        public const string NoFile = nameof(NoFile);
 
         #region validation properties not in file
         public const string PropertyValue = "{PropertyValue}";

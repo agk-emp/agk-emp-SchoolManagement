@@ -144,6 +144,9 @@
   <data name="Email" xml:space="preserve">
     <value>The email</value>
   </data>
+  <data name="FileUploadingFailed" xml:space="preserve">
+    <value>Failed to upload file</value>
+  </data>
   <data name="FullName" xml:space="preserve">
     <value>The user login name</value>
   </data>
@@ -173,6 +176,9 @@
   </data>
   <data name="NewPassword" xml:space="preserve">
     <value>The new password</value>
+  </data>
+  <data name="NoFile" xml:space="preserve">
+    <value>No file</value>
   </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>{0}: can not be empty</value>
