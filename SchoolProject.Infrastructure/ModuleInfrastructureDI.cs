@@ -13,6 +13,7 @@ using SchoolProject.Infrastructure.InfrastructureBases;
 using SchoolProject.Infrastructure.Repositories;
 using SchoolProject.Infrastructure.Repositories.Procedures;
 using SchoolProject.Infrastructure.Repositories.Views;
+using Serilog;
 using System.Globalization;
 
 namespace SchoolProject.Infrastructure
@@ -28,6 +29,11 @@ namespace SchoolProject.Infrastructure
             });
 
             services.AddEndpointsApiExplorer();
+
+            Log.Logger = new LoggerConfiguration()
+              .ReadFrom.Configuration(configuration).CreateLogger();
+            services.AddSerilog();
+
 
             services.AddIdentityApiEndpoints<User>(option =>
             {
