@@ -8,6 +8,7 @@ using SchoolProject.Core.Wrappers;
 using SchoolProject.Data.Entities;
 using SchoolProject.Infrastructure.Resources;
 using SchoolProject.Service.Abstracts;
+using Serilog;
 using System.Linq.Expressions;
 
 namespace SchoolProject.Core.Features.Departments.Queries.Handlers
@@ -38,6 +39,7 @@ namespace SchoolProject.Core.Features.Departments.Queries.Handlers
 
             if (department is null)
             {
+                Log.Error("No department with this id exists");
                 return NotFound<GetDepartmentByIdResponse>();
             }
 
