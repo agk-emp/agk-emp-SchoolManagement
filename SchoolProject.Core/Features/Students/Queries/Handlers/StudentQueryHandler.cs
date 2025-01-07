@@ -56,7 +56,7 @@ namespace SchoolProject.Core.Features.Students.Queries.Handlers
                 .ToPaginatedResult(request.PageNumber,
                 request.PageSize);
 
-            query.Meta = new { CurrentPageCount = query.Data.Count };
+            query.Meta = new { CurrentPageCount = query.TotalCount };
 
             return query;
         }

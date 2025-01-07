@@ -5,11 +5,10 @@ namespace SchoolProject.Core.Wrappers
 {
     public class PaginatedResponse<T> : Response<List<T>>
     {
-        internal PaginatedResponse(bool succeeded, List<T> data = default, int count = 0, int page = 1, int pageSize = 10)
+        public PaginatedResponse(bool succeeded = true, List<T> data = default, int count = 0, int page = 1, int pageSize = 10)
         {
             Succeeded = succeeded;
             Data = data;
-            count = count;
             CurrentPage = page;
             PageSize = pageSize;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
