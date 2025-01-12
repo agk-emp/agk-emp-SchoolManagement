@@ -12,6 +12,7 @@ using SchoolProject.Data.Entities;
 using SchoolProject.Data.Helper;
 using SchoolProject.Infrastructure.Resources;
 using SchoolProject.Service.Abstracts;
+using SchoolProject.test.CoreTests.DataModels;
 using System.Net;
 
 namespace SchoolProject.test.CoreTests.Students.Query
@@ -98,8 +99,10 @@ namespace SchoolProject.test.CoreTests.Students.Query
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
+        //[InlineData(1)]
+        //[InlineData(2)]
+        //[ClassData(typeof(StudentIdClassData))]
+        [MemberData(nameof(studentIdMemberData.GetStudentIds), MemberType = typeof(studentIdMemberData))]
         public async Task GetStudentById_Exists_Returns_Ok(int id)
         {
             //Arrange
@@ -133,6 +136,7 @@ namespace SchoolProject.test.CoreTests.Students.Query
             //Assert
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.StudID.Should().Be(id);
+            result.Data.Name.Should().Be(_studentServiceMock.Object.GetStudentById(id).Result.NameEn);
             result.Data.Should().BeOfType<GetStudentById>();
         }
 
